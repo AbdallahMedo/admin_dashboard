@@ -175,7 +175,7 @@ function openInteractiveTester(ep) {
             ${ep.pathParams.map(pp => `
               <div class="form-group" style="margin-bottom: 0.5rem;">
                 <label class="form-label">{${pp.name}}</label>
-                <input type="text" class="form-control path-param-input" data-param="${pp.name}" value="${pp.example}">
+                <input type="text" class="form-control path-param-input" data-param="${pp.name}" placeholder="${pp.example}">
               </div>
             `).join('')}
           </div>
@@ -187,7 +187,7 @@ function openInteractiveTester(ep) {
             ${ep.queryParams.map(qp => `
               <div class="form-group" style="margin-bottom: 0.5rem;">
                 <label class="form-label">${qp.name} <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: normal;">(${qp.description || ''})</span></label>
-                <input type="text" class="form-control query-param-input" data-param="${qp.name}" value="${qp.example}">
+                <input type="text" class="form-control query-param-input" data-param="${qp.name}" placeholder="${qp.example}">
               </div>
             `).join('')}
           </div>

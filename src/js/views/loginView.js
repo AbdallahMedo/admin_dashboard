@@ -1,3 +1,4 @@
+import { enhancePasswordFields } from '../ui/password.js';
 import brandLogo from '../../../logo/logo.png';
 import { authState } from '../state/authState.js';
 import { api } from '../api/client.js';
@@ -79,6 +80,7 @@ export function renderLoginView(container) {
     </div>
   `;
 
+  enhancePasswordFields(container);
   const form = container.querySelector('#login-form');
   const emailInput = container.querySelector('#login-email');
   const passwordInput = container.querySelector('#login-password');

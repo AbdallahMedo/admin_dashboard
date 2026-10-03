@@ -1,3 +1,4 @@
+import { enhancePasswordFields } from '../ui/password.js';
 import { api } from '../api/client.js';
 import { modal } from '../ui/modal.js';
 import { toast } from '../ui/toast.js';
@@ -27,7 +28,6 @@ export function openCreateAdminModal(onSuccessCallback = null) {
           id="new-admin-name" 
           class="form-control" 
           placeholder="${isAr ? 'مثال: مسؤول مبيعات' : 'e.g. Sales Administrator'}" 
-          value="${isAr ? 'مسؤول مبيعات' : 'Sales Administrator'}"
           required
         >
       </div>
@@ -41,7 +41,6 @@ export function openCreateAdminModal(onSuccessCallback = null) {
           id="new-admin-email" 
           class="form-control" 
           placeholder="sales.admin@example.com" 
-          value="sales.admin@example.com"
           required
         >
       </div>
@@ -55,10 +54,8 @@ export function openCreateAdminModal(onSuccessCallback = null) {
         </label>
         <div style="position: relative;">
           <input 
-            type="text" 
-            id="new-admin-password" 
+            type="password" autocomplete="new-password" minlength="12" id="new-admin-password" 
             class="form-control" 
-            value="Use-a-unique-12-character-password"
             placeholder="Min 12 characters"
             required
             style="font-family: 'JetBrains Mono', monospace;"
@@ -80,7 +77,6 @@ export function openCreateAdminModal(onSuccessCallback = null) {
             id="new-admin-phone" 
             class="form-control" 
             placeholder="01000000000" 
-            value="01000000000"
           >
         </div>
         <div class="form-group">
@@ -90,7 +86,6 @@ export function openCreateAdminModal(onSuccessCallback = null) {
             id="new-admin-whatsapp" 
             class="form-control" 
             placeholder="01000000000" 
-            value="01000000000"
           >
         </div>
       </div>
@@ -114,6 +109,7 @@ export function openCreateAdminModal(onSuccessCallback = null) {
       </button>
     `,
     onOpen: (modalEl) => {
+      enhancePasswordFields(modalEl);
       const pwdInput = modalEl.querySelector('#new-admin-password');
       const lenBadge = modalEl.querySelector('#password-len-badge');
       const strengthBar = modalEl.querySelector('#pwd-strength-bar');

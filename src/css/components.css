@@ -752,3 +752,12 @@ input:checked + .slider:before {
   overflow-x: auto;
   position: relative;
 }
+
+.password-field { position: relative; }
+.password-field .form-control { padding-inline-end: 5rem; }
+.password-toggle { position: absolute; inset-inline-end: .75rem; top: 50%; transform: translateY(-50%); border: 0; background: transparent; color: var(--primary); font: inherit; font-size: .8rem; font-weight: 600; cursor: pointer; padding: .35rem; }
+.password-toggle:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: var(--radius-sm); }
+
+/* Keep example hints visible only while a field is empty. */
+input:not(:placeholder-shown)::placeholder,
+textarea:not(:placeholder-shown)::placeholder { color: transparent; }

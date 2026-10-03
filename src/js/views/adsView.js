@@ -149,11 +149,11 @@ function openCreateAdModal(onSuccess) {
         </div>
         <div class="form-group">
           <label class="form-label">Banner Image URL <span class="required">*</span></label>
-          <input type="url" id="new-ad-image" class="form-control" value="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1200" required>
+          <input type="url" id="new-ad-image" class="form-control" placeholder="https://example.com/banner.jpg" required>
         </div>
         <div class="form-group">
           <label class="form-label">Destination URL</label>
-          <input type="text" id="new-ad-link" class="form-control" placeholder="/promotions/exhibition" value="/promotions/exhibition">
+          <input type="text" id="new-ad-link" class="form-control" placeholder="/promotions/exhibition">
         </div>
         <div class="form-group">
           <label class="form-label">Placement Position</label>

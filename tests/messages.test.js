@@ -12,7 +12,7 @@ const { api } = await import('../src/js/api/client.js');
 const { authState } = await import('../src/js/state/authState.js');
 // These transport fixtures exercise relative requests explicitly.
 authState.baseUrl = '';
-const { messagesEndpoint, updateMessagesBadge, refreshMessagesBadge, messageDetailHtml, messageError } = await import('../src/js/views/messagesView.js');
+const { messagesEndpoint, updateMessagesBadge, refreshMessagesBadge, messageDetailHtml, messageError, messageReplyLinks } = await import('../src/js/views/messagesView.js');
 const { handleMockRequest } = await import('../src/js/api/mockServer.js');
 
 test('message badge displays positive totals and hides zero or invalid totals', () => {
@@ -67,4 +67,14 @@ test('mock matches pagination, count, details, empty pages and validation contra
   }
   assert.equal((await handleMockRequest('GET', `${messagesEndpoint}/missing`)).status, 404);
   for (const status of [400, 401, 403, 404]) assert.ok(messageError({ status }));
+});
+
+test('reply links preserve recipient and encode subject without injecting mail headers', () => {
+  const links = messageReplyLinks({ email: ' nour@example.com ', subject: 'Villa & design\nCc: other' });
+  assert.ok(links.mailto.startsWith('mailto:nour@example.com?subject='));
+  assert.ok(!links.mailto.includes('%0A'));
+  const gmail = new URL(links.gmail);
+  assert.equal(gmail.origin, 'https://mail.google.com');
+  assert.equal(gmail.searchParams.get('to'), 'nour@example.com');
+  assert.equal(gmail.searchParams.get('su'), 'Re: Villa & design Cc: other');
 });

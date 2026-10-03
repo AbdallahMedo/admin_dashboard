@@ -1,10 +1,19 @@
-﻿import { api } from '../api/client.js';
+import { api } from '../api/client.js';
 import { authState } from '../state/authState.js';
 import { modal } from '../ui/modal.js';
 import { i18n } from '../i18n.js';
 
 export const messagesEndpoint = '/api/admin/contact-messages';
 export const escapeMessage = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+export function messageReplyLinks(row) {
+  const email = String(row.email ?? '').trim().replace(/[\r\n]/g, '');
+  const subject = `Re: ${String(row.subject ?? '').replace(/[\r\n]/g, ' ')}`;
+  const recipient = encodeURIComponent(email).replace(/%40/g, '@');
+  return {
+    mailto: `mailto:${recipient}?subject=${encodeURIComponent(subject)}`,
+    gmail: `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}`
+  };
+}
 const t = (en, ar) => i18n.isRtl() ? ar : en;
 const dateText = value => {
   const date = new Date(value);
@@ -76,7 +85,8 @@ export async function renderMessagesView(container) {
       <td dir="ltr">${escapeMessage(row.phoneNumber)}</td><td dir="auto">${escapeMessage(row.subject)}</td>
       <td>${escapeMessage(dateText(row.createdAt))}</td><td><div class="message-actions">
       <button class="btn btn-secondary btn-sm" data-view="${escapeMessage(row.id)}">${t('View', 'عرض')}</button>
-      <a class="btn btn-secondary btn-sm" href="mailto:${escapeMessage(encodeURIComponent(row.email))}">${t('Reply by email', 'الرد بالبريد')}</a>
+      <a class="btn btn-secondary btn-sm" href="${escapeMessage(messageReplyLinks(row).mailto)}">${t('Reply by email', 'الرد بالبريد')}</a>
+      <a class="btn btn-secondary btn-sm" href="${escapeMessage(messageReplyLinks(row).gmail)}" target="_blank" rel="noopener noreferrer">${t('Open Gmail', 'فتح Gmail')}</a>
       <a class="btn btn-secondary btn-sm" href="tel:${escapeMessage(encodeURIComponent(row.phoneNumber))}">${t('Call', 'اتصال')}</a>
       </div></td></tr>`).join('') || `<tr><td colspan="6" class="messages-empty">${t(total === 0 ? 'No messages yet.' : 'No messages match your search.', total === 0 ? 'لا توجد رسائل حتى الآن.' : 'لا توجد رسائل تطابق البحث.')}</td></tr>`;
   }
