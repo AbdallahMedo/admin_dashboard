@@ -2,6 +2,8 @@
 
 const translations = {
   en: {
+    processing: 'Processing', ready_for_shipping: 'Ready for shipping', discount_percentage: 'Discount (%)', discount_amount: 'Discount amount',
+    promo_codes: 'Promo Codes',
     messages: 'Contact Messages',
     delivery_fees: 'Delivery Fees',
     // Brand & Header
@@ -185,6 +187,8 @@ const translations = {
   },
 
   ar: {
+    processing: 'قيد التجهيز', ready_for_shipping: 'جاهز للشحن', discount_percentage: 'نسبة الخصم (%)', discount_amount: 'قيمة الخصم',
+    promo_codes: 'أكواد الخصم',
     messages: 'رسائل التواصل',
     delivery_fees: 'رسوم التوصيل',
     // Brand & Header

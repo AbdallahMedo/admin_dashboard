@@ -12,6 +12,7 @@ import { renderMessagesView, refreshMessagesBadge } from './views/messagesView.j
 import { renderLoginView } from './views/loginView.js';
 import { renderForbiddenView } from './views/forbiddenView.js';
 import { renderOverviewView } from './views/overviewView.js';
+import { renderPromoCodesView } from './views/promoCodesView.js';
 import { renderOrdersView } from './views/ordersView.js';
 import { renderProductsView } from './views/productsView.js';
 import { renderCategoriesView } from './views/categoriesView.js';
@@ -23,6 +24,7 @@ import { renderUsersView } from './views/usersView.js';
 import { renderApiExplorerView } from './views/apiExplorerView.js';
 
 const routes = {
+  '#/promo-codes': { titleKey: 'promo_codes', view: renderPromoCodesView },
   '#/messages': { titleKey: 'messages', view: renderMessagesView },
   '#/delivery-fees': { titleKey: 'delivery_fees', view: renderDeliveryFeesView },
   '#/login': { titleKey: 'logout', view: renderLoginView, public: true },
@@ -164,6 +166,7 @@ class Application {
               <span>${i18n.t('orders')}</span>
               <span class="nav-badge" id="sidebar-orders-badge">${i18n.t('active')}</span>
             </a>
+            <a href="#/promo-codes" class="nav-item"><span>%</span><span>${i18n.t('promo_codes')}</span></a>
             <a href="#/delivery-fees" class="nav-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h12v12H3zM15 10h4l3 4v4h-7"/><circle cx="7" cy="19" r="2"/><circle cx="18" cy="19" r="2"/></svg>
               <span>${i18n.t('delivery_fees')}</span>

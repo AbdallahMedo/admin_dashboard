@@ -3,6 +3,7 @@ import { modal } from '../ui/modal.js';
 import { toast } from '../ui/toast.js';
 import { i18n } from '../i18n.js';
 
+const ITEM_STATUSES = [['Available', 'in_stock'], ['OutOfStock', 'out_of_stock'], ['Cancelled', 'cancelled'], ['PendingConfirmation', 'pending_confirmation'], ['Confirmed', 'confirmed'], ['Processing', 'processing'], ['ReadyForShipping', 'ready_for_shipping'], ['Shipped', 'shipped'], ['Delivered', 'delivered']];
 let currentStatusFilter = 'All';
 
 export async function renderOrdersView(container) {
@@ -212,7 +213,7 @@ export async function openOrderDetailDrawer(orderId, onUpdateCallback = null) {
     const customer = order.customerName || order.customer?.name || (isAr ? 'عميل المتجر' : 'Store Client');
     const phone = order.phoneNumber || order.customer?.phoneNumber || '';
     const whatsapp = order.whatsAppNumber || order.customer?.whatsAppNumber || phone;
-    const address = [order.address, order.city, order.governorate].filter(Boolean).join(', ') || (order.shippingAddress || (isAr ? 'لم يحدد عنوان' : 'No address specified'));
+    const address = [order.address, order.city, order.governorate].filter(Boolean).join(', ') || '—';
 
     const contentHtml = `
       <div style="display: flex; flex-direction: column; gap: 1.25rem;">
@@ -308,17 +309,14 @@ export async function openOrderDetailDrawer(orderId, onUpdateCallback = null) {
                       ${i18n.formatCurrency(totalItemPrice)}
                     </span>
                     <select class="form-select item-status-select" data-item-id="${item.id}" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.75rem;">
-                      <option value="Available" ${item.status === 'Available' ? 'selected' : ''}>Available</option>
-                      <option value="Pending" ${item.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                      <option value="Confirmed" ${item.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
-                      <option value="Prepared" ${item.status === 'Prepared' ? 'selected' : ''}>Prepared</option>
-                      <option value="Shipped" ${item.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                      ${ITEM_STATUSES.map(([value, key]) => `<option value="${value}" ${item.status === value ? 'selected' : ''}>${i18n.t(key)}</option>`).join('')}
                     </select>
                   </div>
                 </div>
               `;
             }).join('')}
 
+${[['subtotal', order.subtotal], ['discount_percentage', order.discountPercentage], ['discount_amount', order.discountAmount], ['shipping', order.shippingCost]].map(([key, value]) => `<div style="display:flex;justify-content:space-between;padding:0.35rem 0"><span>${i18n.t(key)}</span><span>${value == null ? '—' : key === 'discount_percentage' ? `${value}%` : i18n.formatCurrency(value)}</span></div>`).join('')}
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 0 0.35rem 0; font-weight: 800;">
               <span>${i18n.t('total_amount')}</span>
               <span style="font-size: 1.15rem; color: var(--primary);">${i18n.formatCurrency(total)}</span>
@@ -413,19 +411,26 @@ export async function openOrderDetailDrawer(orderId, onUpdateCallback = null) {
         });
 
         drawer.querySelectorAll('.item-status-select').forEach(select => {
+          select.dataset.savedStatus = (order.items || []).find(item => String(item.id) === select.getAttribute('data-item-id'))?.status || select.value;
           select.addEventListener('change', async () => {
             const itemId = select.getAttribute('data-item-id');
             const itemStatus = select.value;
+            const previousStatus = select.dataset.savedStatus;
+            select.disabled = true;
 
             try {
               await api.request(`/api/admin/orders/${orderId}/items/${itemId}/status`, {
                 method: 'PATCH',
                 body: { status: itemStatus }
               });
+              select.dataset.savedStatus = itemStatus;
               toast.success(i18n.t('success'));
               if (onUpdateCallback) onUpdateCallback();
             } catch (err) {
+              select.value = previousStatus;
               toast.error(err.message);
+            } finally {
+              select.disabled = false;
             }
           });
         });
